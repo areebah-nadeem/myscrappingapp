@@ -1,0 +1,7 @@
+pandas
+beautifulsoup4
+selenium
+requests
+airtable-python-wrapper
+webdriver-manager
+openpyxl   # Optional, only if you're working with Excel files
