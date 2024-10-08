@@ -339,37 +339,37 @@ cleaned_data = clean_data(scraped_data_list)
 
 
 ###############################         PART 6 UPDATED
-# Airtable API setup (ensure you replace these with your actual Airtable credentials)
-# AIRTABLE_API_KEY = 'patF55CtWdPT4xLGM.cc78d8b02df5e87cf80307e305118bb1ce94b36da8a699fbb0452849ea4cd503'
-# BASE_ID = 'appls71BBO4hL6cBx'
-# TABLE_NAME = 'Data'
-# airtable = Airtable(BASE_ID, TABLE_NAME, AIRTABLE_API_KEY)
+#Airtable API setup (ensure you replace these with your actual Airtable credentials)
+AIRTABLE_API_KEY = 'patF55CtWdPT4xLGM.cc78d8b02df5e87cf80307e305118bb1ce94b36da8a699fbb0452849ea4cd503'
+BASE_ID = 'appls71BBO4hL6cBx'
+TABLE_NAME = 'Data'
+airtable = Airtable(BASE_ID, TABLE_NAME, AIRTABLE_API_KEY)
 
-# # Function to upload a single row to Airtable
-# def upload_to_airtable(row):
-#     company_name = row['CompanyName']  # Use the correct key from the cleaned data
+# Function to upload a single row to Airtable
+def upload_to_airtable(row):
+    company_name = row['CompanyName']  # Use the correct key from the cleaned data
     
-#     try:
-#         # Search for existing records in Airtable by 'Company Name' to avoid duplicates
-#         existing_records = airtable.search('Company Name', company_name)
+    try:
+        # Search for existing records in Airtable by 'Company Name' to avoid duplicates
+        existing_records = airtable.search('Company Name', company_name)
         
-#         if len(existing_records) == 0:  # No existing record, insert new one
-#             record = {
-#                 'Company Name': row['CompanyName'],  # Map to 'Company Name' in Airtable
-#                 'Address': row['Address'],
-#                 'Contact': row['Contact']
-#             }
-#             airtable.insert(record)
-#             print(f"Inserted: {company_name}")
-#         else:
-#             print(f"Duplicate found: {company_name} - skipping.")
+        if len(existing_records) == 0:  # No existing record, insert new one
+            record = {
+                'Company Name': row['CompanyName'],  # Map to 'Company Name' in Airtable
+                'Address': row['Address'],
+                'Contact': row['Contact']
+            }
+            airtable.insert(record)
+            print(f"Inserted: {company_name}")
+        else:
+            print(f"Duplicate found: {company_name} - skipping.")
     
-#     except Exception as e:
-#         print(f"Error uploading {company_name}: {e}")
+    except Exception as e:
+        print(f"Error uploading {company_name}: {e}")
 
-# # Iterate over the cleaned data and upload each row to Airtable with a delay
-# for entry in cleaned_data:
-#     upload_to_airtable(entry)
-#     time.sleep(0.2)  # Add a 200ms delay between requests to limit to 5 requests per second
+# Iterate over the cleaned data and upload each row to Airtable with a delay
+for entry in cleaned_data:
+    upload_to_airtable(entry)
+    time.sleep(0.2)  # Add a 200ms delay between requests to limit to 5 requests per second
 
-# print("Data upload complete.")
+print("Data upload complete.")
