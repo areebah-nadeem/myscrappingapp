@@ -1,6 +1,11 @@
-import pandas as pd
+
+
+
 from airtable import Airtable
-import time
+
+# from selenium.webdriver.chrome.service import Service
+# from webdriver_manager.chrome import ChromeDriverManager
+import openpyxl
 
 import re
 import time
@@ -12,25 +17,24 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.firefox.service import Service
+from webdriver_manager.firefox import GeckoDriverManager  # For automatic geckodriver management
 from urllib.parse import quote
 
-# Part 1: Google Scraping - List of URLs to scrape from Google (you can add more URLs if needed)
-# List of URLs to scrape
+# Part 1: Google Scraping - List of URLs to scrape from Google
 url_list = [
     'https://www.google.com/search?sca_esv=90bdcdfe264c115d&rlz=1C1UEAD_enCA1053CA1053&udm=8&sxsrf=ADLYWIKaV7D8n_W9GDCduxW8Rl4X0yptjA:1728262942930&q=google+job+for+apprenticeship+in+ontario&spell=1&sa=X&ved=2ahUKEwinw6qWifuIAxXLpokEHXorMRcQBSgAegQICRAB&biw=1536&bih=695&dpr=1.25&jbr=sep:0',
-    'https://www.google.com/search?q=google%20job%20for%20apprenticeship%20near%20manitoba&sca_esv=90bdcdfe264c115d&rlz=1C1UEAD_enCA1053CA1053&sxsrf=ADLYWILOmJdrWKb6tUNWG_BZ4QmjaPPzLw%3A1728262831418&ei=rzIDZ9qgGbDIptQPp4K90QI&ved=2ahUKEwj3zpfjiPuIAxWnm4kEHXsbF_QQ3L8LegQIGxAN&uact=5&oq=google%20job%20for%20apprenticeship%20near%20manitoba&gs_lp=Egxnd3Mtd2l6LXNlcnAiK2dvb2dsZSBqb2IgZm9yIGFwcHJlbnRpY2VzaGlwIG5lYXIgbWFuaXRvYmEyBRAhGKABMgUQIRigATIFECEYnwVI0RZQ-gpYgRRwAngBkAEDmAG1AaABlgiqAQM0LjS4AQPIAQD4AQGYAgegApAEwgIKEAAYsAMY1gQYR8ICBxAhGKABGAqYAwCIBgGQBgiSBwM2LjGgB4Y8&sclient=gws-wiz-serp&jbr=sep:0&udm=8',
+    'https://www.google.com/search?q=google%20job%20for%20apprenticeship%20near%20manitoba&sca_esv=90bdcdfe264c115d&rlz=1C1UEAD_enCA1053CA1053&sxsrf=ADLYWILOmJdrWKb6tUNWG_BZ4QmjaPPzLw%3A1728262831418&ei=rzIDZ9qgGbDIptQPp4K90QI&ved=2ahUKEwj3zpfjiPuIAxWnm4kEHXsbF_QQ3L8LegQIGxAN&uact=5&oq=google%20job%20for%20apprenticeship%20near%20manitoba&gs_lp=Egxnd3Mtd2l6LXNlcnAiK2dvb2dsZSBqb2IgZm9yIGFwcHJlbnRpY2VzaGlwIG5lYXIgYnJpdGlzaCBjb2x1bSoCCAAyBRAhGKABMgUQIRigATIFECEYnwVI0RZQ-gpYgRRwAngBkAEDmAG1AaABlgiqAQM0LjS4AQPIAQD4AQGYAgegApAEwgIKEAAYsAMY1gQYR8ICBxAhGKABGAqYAwCIBgGQBgiSBwM2LjGgB4Y8&sclient=gws-wiz-serp&jbr=sep:0&udm=8',
     'https://www.google.com/search?q=google+job+for+apprenticeship+near+british+columbia&sca_esv=90bdcdfe264c115d&rlz=1C1UEAD_enCA1053CA1053&udm=8&sxsrf=ADLYWILS5XIw9q-wXgXKnJ81S30usC7xOQ%3A1728262840181&ei=uDIDZ5XoCtmFw8cP1N7JuAI&oq=google+job+for+apprenticeship+near+british+colum&gs_lp=Egxnd3Mtd2l6LXNlcnAiMGdvb2dsZSBqb2IgZm9yIGFwcHJlbnRpY2VzaGlwIG5lYXIgYnJpdGlzaCBjb2x1bSoCCAAyBRAhGKABMgUQIRigATIFECEYoAFIqjFQ4gVYvR1wAngBkAEAmAGIAaABiwqqAQM4LjW4AQHIAQD4AQGYAg-gArEKwgIKEAAYsAMY1gQYR8ICBRAhGJ8FwgIEECEYFcICBxAhGKABGArCAgQQIRgKmAMAiAYBkAYEkgcDOS42oAe4QQ&sclient=gws-wiz-serp&jbr=sep:0'
 ]
 
+# Set up Selenium WebDriver with Service for Firefox
+service = Service(GeckoDriverManager().install())  # Automatic geckodriver management
 
-# Set up Selenium WebDriver with Service
-service = Service(ChromeDriverManager().install())
-
-options = webdriver.ChromeOptions()
-# options.add_argument("--headless")
-driver = webdriver.Chrome(service=service, options=options)
+options = webdriver.FirefoxOptions()
+# Uncomment the next line to run the browser headless
+options.add_argument("--headless")
+driver = webdriver.Firefox(service=service, options=options)
 
 # Initialize set to keep track of existing companies (to avoid duplicates)
 existing_companies = set()
@@ -54,17 +58,9 @@ def scrape_page(soup):
             # Add company name and address to the main list for further processing
             scraped_data_list.append({
                 'CompanyName': company_name,        # Part 1: Scraped Google company name
-                'Address': address_text,            # Part 1: Scraped Google address
-                'Yellow Page Company Name': '',     # Part 2: Placeholder for Yellow Pages data
-                'Yellow Page Contact': '',          # Part 2: Placeholder for Yellow Pages data
-                'Google WoPH Company Name': '',     # Part 3: Placeholder for Google WoPH data
-                'Google WoPH Contact': '',          # Part 3: Placeholder for Google WoPH data
-                'Company to Yellow Match %': 0,     # Part 4: Match % between Google and Yellow Page names
-                'Company to Google Match %': 0,     # Part 4: Match % between Google names
-                'Contact': ''                       # Part 4: Final contact field
+                'Address': address_text             # Part 1: Scraped Google address
             })
             existing_companies.add(company_name)
-            print(f"Company: {company_name}, Address: {address_text}")
 
 # Part 1: Google Scraping - Loop through each URL and scrape data from Google
 for url in url_list:
@@ -101,10 +97,8 @@ for url in url_list:
                     next_button.click()
                     time.sleep(5)  # Wait longer for the next page to load
                 else:
-                    print("No more pages.")
                     break
             except:
-                print("Next button not found or no more pages.")
                 break
 
         except Exception as e:
@@ -115,6 +109,25 @@ for url in url_list:
 
 # Close the browser after scraping is complete
 driver.quit()
+
+# Check if scraped_data_list has data
+if scraped_data_list:
+    # Part 2: Print the final scraped data list
+    print("Final Scraped Data:")
+    for entry in scraped_data_list:
+        print(entry)
+    
+
+print("Final Scraped Data:", scraped_data_list)
+    # Part 1: Export the scraped data to an Excel file
+#     df = pd.DataFrame(scraped_data_list)
+    
+#     # Save the DataFrame to an Excel file
+#     df.to_excel("scraped_companies.xlsx", index=False)
+    
+#     print("Data has been saved to scraped_companies.xlsx")
+# else:
+#     print("No data was scraped.")
 
 # Part 2: Yellow Pages Lookup - Function to clean and format the company name and address
 def format_text(text):
@@ -264,14 +277,14 @@ for company in scraped_data_list:
     # Add a delay to avoid hitting Google's rate limits
     time.sleep(2)  # Adjust this delay if needed
 
-# Part 4: Convert the list of dictionaries to a DataFrame and save to Excel
-# df = pd.DataFrame(scraped_data_list)
+# Part F: Convert the list of dictionaries to a DataFrame and save to Excel
+df = pd.DataFrame(scraped_data_list)
 
 # # Define the path to save the Excel file
-# output_excel_file = 'scraped_data_output.xlsx'
+output_excel_file = 'scraped_data_output.xlsx'
 
 # # Save the DataFrame to Excel (make sure to use openpyxl as the engine)
-# df.to_excel(output_excel_file, index=False, engine='openpyxl')
+df.to_excel(output_excel_file, index=False, engine='openpyxl')
 
 # print(f"Data successfully saved to {output_excel_file}")
 
@@ -340,36 +353,43 @@ cleaned_data = clean_data(scraped_data_list)
 
 ###############################         PART 6 UPDATED
 # Airtable API setup (ensure you replace these with your actual Airtable credentials)
-# AIRTABLE_API_KEY = 'patF55CtWdPT4xLGM.cc78d8b02df5e87cf80307e305118bb1ce94b36da8a699fbb0452849ea4cd503'
-# BASE_ID = 'appls71BBO4hL6cBx'
-# TABLE_NAME = 'Data'
-# airtable = Airtable(BASE_ID, TABLE_NAME, AIRTABLE_API_KEY)
+AIRTABLE_API_KEY = 'patF55CtWdPT4xLGM.cc78d8b02df5e87cf80307e305118bb1ce94b36da8a699fbb0452849ea4cd503'
+BASE_ID = 'appls71BBO4hL6cBx'
+TABLE_NAME = 'Data'
+airtable = Airtable(BASE_ID, TABLE_NAME, AIRTABLE_API_KEY)
 
-# # Function to upload a single row to Airtable
-# def upload_to_airtable(row):
-#     company_name = row['CompanyName']  # Use the correct key from the cleaned data
+# Function to upload a single row to Airtable
+def upload_to_airtable(row):
+    company_name = row['CompanyName']  # Use the correct key from the cleaned data
     
-#     try:
-#         # Search for existing records in Airtable by 'Company Name' to avoid duplicates
-#         existing_records = airtable.search('Company Name', company_name)
+    try:
+        # Search for existing records in Airtable by 'Company Name' to avoid duplicates
+        existing_records = airtable.search('Company Name', company_name)
         
-#         if len(existing_records) == 0:  # No existing record, insert new one
-#             record = {
-#                 'Company Name': row['CompanyName'],  # Map to 'Company Name' in Airtable
-#                 'Address': row['Address'],
-#                 'Contact': row['Contact']
-#             }
-#             airtable.insert(record)
-#             print(f"Inserted: {company_name}")
-#         else:
-#             print(f"Duplicate found: {company_name} - skipping.")
+        if len(existing_records) == 0:  # No existing record, insert new one
+            record = {
+                'Company Name': row['CompanyName'],  # Map to 'Company Name' in Airtable
+                'Address': row['Address'],
+                'Contact': row['Contact']
+            }
+            airtable.insert(record)
+            print(f"Inserted: {company_name}")
+        else:
+            print(f"Duplicate found: {company_name} - skipping.")
     
-#     except Exception as e:
-#         print(f"Error uploading {company_name}: {e}")
+    except Exception as e:
+        print(f"Error uploading {company_name}: {e}")
 
-# # Iterate over the cleaned data and upload each row to Airtable with a delay
-# for entry in cleaned_data:
-#     upload_to_airtable(entry)
-#     time.sleep(0.2)  # Add a 200ms delay between requests to limit to 5 requests per second
+# Iterate over the cleaned data and upload each row to Airtable with a delay
+for entry in cleaned_data:
+    upload_to_airtable(entry)
+    time.sleep(0.2)  # Add a 200ms delay between requests to limit to 5 requests per second
 
-# print("Data upload complete.")
+print("Data upload complete.")
+
+
+    # Part F: Export the scraped data to an Excel file
+df = pd.DataFrame(cleaned_data)
+    
+#     # Save the DataFrame to an Excel file
+df.to_excel("scraped_part6_cleaned.xlsx", index=False)
