@@ -392,8 +392,5 @@ print("Data upload complete.")
 # df = pd.DataFrame(cleaned_data)
     
 #     # Save the DataFrame to an Excel file
-<<<<<<< HEAD
 # df.to_excel("scraped_part6_cleaned.xlsx", index=False)
-=======
-# df.to_excel("scraped_part6_cleaned.xlsx", index=False)
->>>>>>> 7df66b4cbd74be81ca00b7a9d2790fd92a13ad11
+ 
