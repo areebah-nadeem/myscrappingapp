@@ -387,10 +387,3 @@ for entry in cleaned_data:
 
 print("Data upload complete.")
 
-
-    # Part F: Export the scraped data to an Excel file
-# df = pd.DataFrame(cleaned_data)
-    
-#     # Save the DataFrame to an Excel file
-# df.to_excel("scraped_part6_cleaned.xlsx", index=False)
- 
