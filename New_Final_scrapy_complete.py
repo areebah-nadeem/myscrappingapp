@@ -278,13 +278,13 @@ for company in scraped_data_list:
     time.sleep(2)  # Adjust this delay if needed
 
 # Part F: Convert the list of dictionaries to a DataFrame and save to Excel
-df = pd.DataFrame(scraped_data_list)
+# df = pd.DataFrame(scraped_data_list)
 
 # # Define the path to save the Excel file
-output_excel_file = 'scraped_data_output.xlsx'
+# output_excel_file = 'scraped_data_output.xlsx'
 
 # # Save the DataFrame to Excel (make sure to use openpyxl as the engine)
-df.to_excel(output_excel_file, index=False, engine='openpyxl')
+# df.to_excel(output_excel_file, index=False, engine='openpyxl')
 
 # print(f"Data successfully saved to {output_excel_file}")
 
@@ -389,7 +389,7 @@ print("Data upload complete.")
 
 
     # Part F: Export the scraped data to an Excel file
-df = pd.DataFrame(cleaned_data)
+# df = pd.DataFrame(cleaned_data)
     
 #     # Save the DataFrame to an Excel file
-df.to_excel("scraped_part6_cleaned.xlsx", index=False)
+# df.to_excel("scraped_part6_cleaned.xlsx", index=False)
