@@ -9,7 +9,7 @@ on:
     # Runs at 12:00 AM every 15 days
     # - cron: '0 0 */15 * *'
     #testing to run at 9 am oct 21
-    - cron: '0 9 21 10 *'
+    - cron: '0 8 21 10 *'
 
 jobs:
   scrape_job:
