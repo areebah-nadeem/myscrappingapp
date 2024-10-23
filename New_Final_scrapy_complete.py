@@ -364,7 +364,7 @@ def upload_to_airtable(row):
     
     try:
         # Search for existing records in Airtable by 'Company Name' to avoid duplicates
-        existing_records = airtable.search('Company Name', company_name)
+        existing_records = airtable.search('Name', company_name)
         
         if len(existing_records) == 0:  # No existing record, insert new one
             record = {
