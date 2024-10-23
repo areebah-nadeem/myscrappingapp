@@ -368,9 +368,9 @@ def upload_to_airtable(row):
         
         if len(existing_records) == 0:  # No existing record, insert new one
             record = {
-                'Company Name': row['CompanyName'],  # Map to 'Company Name' in Airtable
+                'Name': row['CompanyName'],  # Map to 'Company Name' in Airtable
                 'Address': row['Address'],
-                'Contact': row['Contact']
+                'Phone': row['Contact']
             }
             airtable.insert(record)
             print(f"Inserted: {company_name}")
