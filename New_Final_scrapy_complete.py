@@ -352,8 +352,16 @@ cleaned_data = clean_data(scraped_data_list)
 
 
 ###############################         PART 6 UPDATED
-# Airtable API setup (ensure you replace these with your actual Airtable credentials)
-AIRTABLE_API_KEY = 'patF55CtWdPT4xLGM.cc78d8b02df5e87cf80307e305118bb1ce94b36da8a699fbb0452849ea4cd503'
+# # Airtable API setup (ensure you replace these with your actual Airtable credentials)
+# AIRTABLE_API_KEY = 'patF55CtWdPT4xLGM.cc78d8b02df5e87cf80307e305118bb1ce94b36da8a699fbb0452849ea4cd503'
+# BASE_ID = 'appls71BBO4hL6cBx'
+
+# Airtable API setup
+# AIRTABLE_API_KEY = 'patF55CtWdPT4xLGM.cc78d8b02df5e87cf80307e305118bb1ce94b36da8a699fbb0452849ea4cd503'
+AIRTABLE_API_KEY = 'patMPLSJ1NXS9skXe.72c023ccf1da6a5a6d7e10e85dc38910c23bf23709aa09746794df625cb10952'
+
+# BASE_ID = 'appls71BBO4hL6cBx'
+
 BASE_ID = 'appls71BBO4hL6cBx'
 TABLE_NAME = 'Data'
 airtable = Airtable(BASE_ID, TABLE_NAME, AIRTABLE_API_KEY)
