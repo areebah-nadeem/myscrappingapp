@@ -1,39 +1,39 @@
-name: Run Scrapy Script
+# name: Run Scrapy Script
 
-# Controls when the action will run
-on:
-  push:
-    branches:
-      - main
-  schedule:
-    # Runs at 12:00 AM every 15 days
-    # - cron: '0 0 */15 * *'
-    #testing to run at 8 am oct 21
-    - cron: '0 8 23 10 *'
+# # Controls when the action will run
+# on:
+#   push:
+#     branches:
+#       - main
+#   schedule:
+#     # Runs at 12:00 AM every 15 days
+#     # - cron: '0 0 */15 * *'
+#     #testing to run at 8 am oct 21
+#     - cron: '0 8 23 10 *'
 
-jobs:
-  scrape_job:
-    runs-on: ubuntu-latest
+# jobs:
+#   scrape_job:
+#     runs-on: ubuntu-latest
 
-    steps:
-      # Step 1: Checkout the repository
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+#     steps:
+#       # Step 1: Checkout the repository
+#       - name: Checkout Repository
+#         uses: actions/checkout@v3
 
-      # Step 2: Set up Python
-      - name: Set up Python 3.x
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
+#       # Step 2: Set up Python
+#       - name: Set up Python 3.x
+#         uses: actions/setup-python@v4
+#         with:
+#           python-version: '3.x'
 
-      # Step 3: Install dependencies
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install webdriver-manager
-          pip install airtable-python-wrapper
+#       # Step 3: Install dependencies
+#       - name: Install Dependencies
+#         run: |
+#           python -m pip install --upgrade pip
+#           pip install -r requirements.txt
+#           pip install webdriver-manager
+#           pip install airtable-python-wrapper
 
-      # Step 4: Run the Python script
-      - name: Run Scrapy Script
-        run: python New_Final_scrapy_complete.py
+#       # Step 4: Run the Python script
+#       - name: Run Scrapy Script
+#         run: python New_Final_scrapy_complete.py
